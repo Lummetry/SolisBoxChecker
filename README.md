@@ -1,2 +1,2 @@
-# lite-object-detector
+# VaporBoxCheck
 Pytorch &amp; Tensorflow object detection app
