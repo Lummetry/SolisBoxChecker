@@ -9,8 +9,6 @@ except:
   pass
 
 import os
-import sys
-import cv2
 import numpy as np
 import constants as ct
 
@@ -137,7 +135,7 @@ class PytorchGraph(LummetryObject):
     self.log.stop_timer(timer_name)
     return preds
   
-  def predict(self, np_imgs, preprocess_fn=None):
+  def predict(self, np_imgs):
     timer_name = self._timer_name(ct.TIMER_PREDICT)
     self.log.start_timer(timer_name)
     timestamp = self.log.now_str()
@@ -151,10 +149,8 @@ class PytorchGraph(LummetryObject):
       dct_meta['ERROR'] = 'No images received for inference'
       result = []
     else:
-      np_imgs = self._preprocess_images(np_imgs)
-      if preprocess_fn:
-        np_imgs = preprocess_fn(np_imgs)
-      result = self._run_inference(np_imgs)
+      images = self._preprocess_images(np_imgs)
+      result = self._run_inference(images)
     #endif
     
     dct_meta['SYSTEM_TIME'] = timestamp
@@ -337,8 +333,9 @@ class TensorflowGraph(LummetryObject):
       unique, counts = np.unique(self.input_shape, return_counts=True, axis=0)
       self.resize_shape = tuple(unique[np.argmax(counts)])
       res_h, res_w, _ = self.resize_shape
-      lst_imgs = [self.log.center_image(x, res_h, res_w) 
+      lst_centered = [self.log.center_image(x, res_h, res_w) 
                   if x.shape != self.resize_shape else x for x in np_imgs]
+      lst_imgs = [x[:,:,::-1] for x in lst_centered]
       np_imgs = np.array(lst_imgs)
     else:
       if type(np_imgs) is list:

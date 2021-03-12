@@ -19,17 +19,6 @@ Copyright 2019 Lummetry.AI (Knowledge Investment Group SRL). All Rights Reserved
 @description:
 """
 
-"""
-Output-ul VaporBoxChecker ar trebui sa fie:
-- th v... working
-- running inference...
-- 10/11 person detected
-- 0.05s per frame, 0.25s per batch(5)
-- tf v... working
-...
-...
-"""
-
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
