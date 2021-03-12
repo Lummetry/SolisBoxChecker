@@ -1,0 +1,184 @@
+fara eticheta
+persoana
+bicicleta
+masina
+motocicleta
+avion
+autobuz
+tren
+camion
+barca
+semafor
+hidrant de incendiu
+semn de strada
+semn de oprire
+contor de parcare
+banca
+pasare
+cat
+caine
+cal
+oi
+vaca
+elefant
+urs
+zebra
+girafa
+palaria
+rucsac
+umbrela
+pantof
+ochelari de vedere
+geanta de mana
+cravata
+valiza
+frisbee
+schiuri
+snowboard
+minge sportiva
+zmeu
+lilieci de baseball
+manusa de baseball
+skateboard
+placa de surf
+racheta de tenis
+sticla
+placa
+sticla de vin
+ceasca
+furculita
+cutit
+lingura
+castron
+banana
+mar
+sandwich
+portocaliu
+broccoli
+morcov
+caine cald
+pizza
+gogoasa
+tort
+scaun
+canapea
+planta in ghiveci
+pat
+oglinda
+masa
+fereastra
+birou
+toaleta
+usa
+tv
+laptop
+soarece
+telecomanda
+tastatura
+telefon mobil
+cuptor cu microunde
+cuptor
+toaster
+chiuveta
+frigider
+mixerul
+carte
+ceas
+vaza
+foarfece
+ursulet de plus
+uscator de par
+periuta de dinti
+perie de par
+banner
+patura
+ramura
+podul
+alte cladiri
+Bush
+dulap
+cusca
+carton
+covor
+plafonul altul
+placi de tavan
+stofa
+haine
+nori
+contra
+dulap
+perdea
+chestii de birou
+murdarie
+chestii de usa
+gard
+pardoseala din marmura
+altul
+piatra de podea
+faianta
+lemn de podea
+floare
+ceata
+alte produse alimentare
+fructe
+alte tipuri de mobilier
+iarba
+pietris
+altele
+deal
+casa
+frunze
+lumina
+mat
+metal
+Oglinda
+muschi
+munte
+noroi
+servesel
+net
+hartie
+trotuar
+perna
+alte plante
+plastic
+platforma
+campul de joc
+balustrada
+cale ferata
+fluviu
+drum
+roca
+acoperit
+rug
+salata
+nisip
+mare
+raft
+altul
+zgarie-nori
+zapada
+altul solid
+scari
+piatra
+paie
+structural-altul
+tabel
+cort
+textile-altele
+prosop
+copac
+legume
+caramida de perete
+beton de perete
+altul de perete
+panou de perete
+Piatra de zid
+faianta
+lemn de perete
+apa-altele
+picaturi de apa
+ferestrele-orb
+alte ferestre
+lemn
+NECUNOSCUT

@@ -1,0 +1,6 @@
+{
+    "BASE_FOLDER": "",
+    "APP_FOLDER": "_vapor_box_check",
+    
+    "PATH_IMAGES": "images"
+}

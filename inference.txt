@@ -1,0 +1,21 @@
+{
+  "PYTORCH" : {
+      "NAME"                      : "Mobilenetv2",
+      "GRAPH"                     : "mobilenetv2.pth",
+      "CLASSES"                   : "imagenet_classes_json.txt",
+      "MODEL_SIZE"                : [640, 640]
+  },
+  "TENSORFLOW" : {
+      "NAME"                      : "TF_ODAPI1_SSD_MOBILENETV2",
+      "GRAPH"                     : "05_1807_ssdm1_fpn_c.pb",
+      "GRAPH"                     : "ssd_mobilenet_v2_coco_2018_03_29.pb",
+      "CLASSES"                   : "coco_classes_adv.txt",
+      "MODEL_SIZE"                : [],
+      "MODEL_THRESHOLD"           : 0.5,
+      "CLASSES_TENSOR_NAME"       : "detection_classes",
+      "SCORES_TENSOR_NAME"        : "detection_scores",
+      "BOXES_TENSOR_NAME"         : "detection_boxes",
+      "NUMDET_TENSOR_NAME"        : "num_detections",
+      "INPUT_TENSOR_NAME"         : "image_tensor"
+  }
+}
