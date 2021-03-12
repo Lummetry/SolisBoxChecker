@@ -22,7 +22,6 @@ Copyright 2019 Lummetry.AI (Knowledge Investment Group SRL). All Rights Reserved
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-import cv2
 import itertools
 import constants as ct
 
@@ -45,8 +44,7 @@ class VaporBoxCheck(LummetryObject):
   
   def startup(self):
     self.log.platform()
-    self.log.gpu_info()
-    self._load_images()
+    self.log.gpu_info()    
     self._cfg_inf = self.log.load_json('inference.txt', verbose=False)
     self._opencv_success = False
     self._pytorch_success = False
@@ -54,18 +52,22 @@ class VaporBoxCheck(LummetryObject):
     return
   
   def _load_images(self):
-    if self.DEBUG:
-      self.log.p('Loading images')
-    path_images = os.path.join(
-      self.log.get_data_folder(), 
-      self.config_data[ct.PATH_IMAGES]
-      )
-    lst_names = os.listdir(path_images)
-    lst_paths = [os.path.join(path_images, x) for x in lst_names]
-    lst_imgs = [cv2.imread(x) for x in lst_paths]
-    self.dct_imgs = dict(zip(lst_names, lst_imgs))
-    if self.DEBUG:
-      self.log.p('{} images loaded'.format(len(self.dct_imgs)))
+    try:
+      import cv2
+      if self.DEBUG:
+        self.log.p('Loading images')
+      path_images = os.path.join(
+        self.log.get_data_folder(), 
+        self.config_data[ct.PATH_IMAGES]
+        )
+      lst_names = os.listdir(path_images)
+      lst_paths = [os.path.join(path_images, x) for x in lst_names]
+      lst_imgs = [cv2.imread(x) for x in lst_paths]
+      self.dct_imgs = dict(zip(lst_names, lst_imgs))
+      if self.DEBUG:
+        self.log.p('{} images loaded'.format(len(self.dct_imgs)))
+    except:
+      self.log.p('Images could not be loaded', 'r')
     return
   
   def _run_pytorch(self):
@@ -188,6 +190,7 @@ class VaporBoxCheck(LummetryObject):
   
   def run(self):
     self._check_opencv()
+    self._load_images()
     self._run_pytorch()
     self._run_tensorflow()
     
