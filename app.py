@@ -48,6 +48,7 @@ class VaporBoxCheck(LummetryObject):
     self.log.gpu_info()
     self._load_images()
     self._cfg_inf = self.log.load_json('inference.txt', verbose=False)
+    self._opencv_success = False
     self._pytorch_success = False
     self._tensorflow_success = False
     return
@@ -175,12 +176,22 @@ class VaporBoxCheck(LummetryObject):
         color='r'
         )
     return
-
+  
+  def _check_opencv(self):
+    try:
+      import cv2
+      self._opencv_success = True
+      self.log.p('OpenCV v{} working'.format(cv2.__version__))
+    except:
+      self.log.p('OpenCV not found.', color='r')
+    return
+  
   def run(self):
+    self._check_opencv()
     self._run_pytorch()
     self._run_tensorflow()
     
-    if self._pytorch_success and self._tensorflow_success:
+    if all([self._opencv_success, self._pytorch_success, self._tensorflow_success]):
       self.log.p(
         str_msg='Environment is properly functioning, please send ' + 
           'the following log file to Lummetry Team: {}'.format(self.log.log_file),
