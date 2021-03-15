@@ -201,9 +201,10 @@ class VaporBoxCheck(LummetryObject):
   
   def run(self):
     self._check_opencv()
-    self._load_images()
-    self._run_pytorch()
-    self._run_tensorflow()
+    if self._opencv_ok:
+      self._load_images()
+      self._run_pytorch()
+      self._run_tensorflow()
     
     if all([self._opencv_ok, self._pytorch_ok, self._tensorflow_ok]):
       self.log.p(

@@ -166,8 +166,6 @@ class TensorflowGraph(LummetryObject):
     self.__version__ = __version__
     self.config_graph = config_graph
     self.tf_runoptions = tf.RunOptions(report_tensor_allocations_upon_oom=True)
-    self.IS_CUDA_AVAILABLE = th.cuda.is_available()
-    self.DEVICE = th.device(ct.CUDA0 if self.IS_CUDA_AVAILABLE else ct.CPU)
     super().__init__(**kwargs)
     return
   
