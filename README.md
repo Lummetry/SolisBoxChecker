@@ -4,7 +4,7 @@ VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow
 ## Prerequisites:
 ### System Prerequisites:
 * Python >= v3.7
-#### If GPU is available:
+#### _If GPU is available:_
 * NVIDIA driver compatible with CUDA >= v10.2 (Info URL: https://docs.nvidia.com/deploy/cuda-compatibility/index.html)
 * CUDA >= v10.2 (Info URL: https://developer.nvidia.com/cuda-downloads)
 * CUDNN >= v7.6.5 (Info URL: https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html)
