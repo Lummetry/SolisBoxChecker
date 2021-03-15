@@ -46,9 +46,9 @@ class VaporBoxCheck(LummetryObject):
     self.log.platform()
     self.log.gpu_info()    
     self._cfg_inf = self.log.load_json('inference.txt', verbose=False)
-    self._opencv_success = False
-    self._pytorch_success = False
-    self._tensorflow_success = False
+    self._opencv_ok = False
+    self._pytorch_ok = False
+    self._tensorflow_ok = False
     return
   
   def _load_images(self):
@@ -82,8 +82,19 @@ class VaporBoxCheck(LummetryObject):
         return
       #end try-except
       
+      try:
+        import torchvision as tv
+      except Exception as e:
+        self.log.p('Torchvision not loaded. Please check if `torchvision` is configured \
+                   in the current environment')
+        self.log.p('Pytorch tests cannot run on the current environment.')
+        self.log.p('Exception: {}'.format(str(e)), color='r')
+        return
+      #end try-except
+      
       from inference import PytorchGraph
       self.log.p('Pytorch v{} working'.format(th.__version__))
+      self.log.p('Torchvision v{} working'.format(tv.__version__))
       
       #loading graph    
       th_graph = PytorchGraph(
@@ -115,7 +126,7 @@ class VaporBoxCheck(LummetryObject):
         ),
         color='g'
         )
-      self._pytorch_success = True
+      self._pytorch_ok = True
     except Exception as e:
       self.log.p(
         'Exception encountered in Pytorch step: {}'.format(str(e)), 
@@ -171,7 +182,7 @@ class VaporBoxCheck(LummetryObject):
           ),
         color='g'
         )
-      self._tensorflow_success = True
+      self._tensorflow_ok = True
     except Exception as e:
       self.log.p(
         str_msg='Exception encountered in Tensorflow step: {}'.format(str(e)),
@@ -182,7 +193,7 @@ class VaporBoxCheck(LummetryObject):
   def _check_opencv(self):
     try:
       import cv2
-      self._opencv_success = True
+      self._opencv_ok = True
       self.log.p('OpenCV v{} working'.format(cv2.__version__))
     except:
       self.log.p('OpenCV not found.', color='r')
@@ -194,7 +205,7 @@ class VaporBoxCheck(LummetryObject):
     self._run_pytorch()
     self._run_tensorflow()
     
-    if all([self._opencv_success, self._pytorch_success, self._tensorflow_success]):
+    if all([self._opencv_ok, self._pytorch_ok, self._tensorflow_ok]):
       self.log.p(
         str_msg='Environment is properly functioning, please send ' + 
           'the following log file to Lummetry Team: {}'.format(self.log.log_file),
