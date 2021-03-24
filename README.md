@@ -17,7 +17,7 @@ VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow
 
 ## Running application:
 1. Git clone the project (including submodules): 
-    <br><span style="background-color: #FFFFFF">`git clone https://github.com/Lummetry/VaporBoxCheck.git --recurse-submodules`</span>
+    <br>`git clone https://github.com/Lummetry/VaporBoxCheck.git --recurse-submodules`
 3. Go to project folder: `cd VaporBoxCheck`
 4. Run: `python main.py`
 5. Wait for script to run and check results
