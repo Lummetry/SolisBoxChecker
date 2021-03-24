@@ -16,11 +16,12 @@ VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow
 * TensorflowGPU/Tensorflow >= 2.0.0 (Info URL: https://www.tensorflow.org/install)
 
 ## Running application:
-1. Git clone the project (including submodules): git clone https://github.com/Lummetry/VaporBoxCheck.git --recurse-submodules
-2. Go to project folder: cd VaporBoxCheck
-3. Run: python main.py
-4. Wait for script to run and check results
-5. Send results to Lummetry Team as indicated in the script results
+1. Git clone the project (including submodules): 
+    `git clone https://github.com/Lummetry/VaporBoxCheck.git --recurse-submodules`
+3. Go to project folder: `cd VaporBoxCheck`
+4. Run: `python main.py`
+5. Wait for script to run and check results
+6. Send results to Lummetry Team as indicated in the script results
 
 ## Example outputs:
 Below you can find a range of outputs after testing the script on different operating systems, hardware platforms and environment setups.
