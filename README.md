@@ -16,7 +16,12 @@ VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow
 * TensorflowGPU/Tensorflow >= 2.0.0 (Info URL: https://www.tensorflow.org/install)
 
 ## Running application:
-1. Git clone the project (including submodules): 
+1. Create environment:
+    <br>`conda create -n vaporbox anaconda opencv python=3.7`
+    <br>`conda activate vaporbox`
+    <br>`conda install -c anaconda tensorflow-gpu==2.1.0`
+    <br>`conda install pytorch torchvision -c pytorch`
+2. Git clone the project (including submodules): 
     <br>`git clone https://github.com/Lummetry/VaporBoxCheck.git --recurse-submodules`
 3. Go to project folder: `cd VaporBoxCheck`
 4. Run: `python main.py`
