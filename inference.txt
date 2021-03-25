@@ -1,7 +1,7 @@
 {
   "PYTORCH" : {
       "NAME"                      : "Mobilenetv2",
-      "GRAPH"                     : "mobilenetv2.pth",
+      "GRAPH"                     : "mobilenetv2.th",
       "CLASSES"                   : "imagenet_classes_json.txt",
       "MODEL_SIZE"                : [640, 640]
   },

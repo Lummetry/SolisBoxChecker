@@ -62,12 +62,8 @@ class PytorchGraph(LummetryObject):
     graph_name = self.config_graph['GRAPH']
     if self.DEBUG:
       self.log.p('Loading graph from models: {}'.format(graph_name))
-    self.model = self.log.load_pytorch_model(
-      model_name=graph_name, 
-      DEBUG=self.DEBUG
-      )
     
-    path = self.log.get_models_file('mobilenetv2.th')
+    path = self.log.get_models_file(graph_name)
     model = mobilenet_v2(pretrained=False)
     model.load_state_dict(th.load(path))
     model.to(self.DEVICE)
