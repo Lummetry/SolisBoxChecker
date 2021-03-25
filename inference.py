@@ -1,5 +1,6 @@
 try:
   import torch as th
+  from torchvision.models import mobilenet_v2
 except:
   pass
 
@@ -18,6 +19,14 @@ from libraries_pub import LummetryObject
 
 __version__ = '1.0.0.0'
 
+def save_th_mobilenetv2():
+  #model prepare
+  import torch as th
+  from torchvision.models import mobilenet_v2
+  model = mobilenet_v2(pretrained=True)
+  th.save(model.state_dict(), 'mobilenetv2.th')
+  return
+
 class PytorchGraph(LummetryObject):
   def __init__(self, config_graph, **kwargs):
     self.__version__ = __version__
@@ -26,7 +35,6 @@ class PytorchGraph(LummetryObject):
     self.DEVICE = th.device(ct.CUDA0 if self.IS_CUDA_AVAILABLE else ct.CPU)
     super().__init__(**kwargs)
     return
-  
   
   def startup(self):
     self._load_classes()
@@ -58,6 +66,16 @@ class PytorchGraph(LummetryObject):
       model_name=graph_name, 
       DEBUG=self.DEBUG
       )
+    
+    path = self.log.get_models_file('mobilenetv2.th')
+    model = mobilenet_v2(pretrained=False)
+    model.load_state_dict(th.load(path))
+    model.to(self.DEVICE)
+    
+    # device = next(model.parameters()).device
+    # self.log.p('Pytorch model running on: {}'.format(device))
+    
+    self.model = model
 
     if self.DEBUG:    
       self.log.p('Setting model to {} and eval mode.'.format(self.DEVICE))

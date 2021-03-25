@@ -102,6 +102,9 @@ class VaporBoxCheck(LummetryObject):
         config_graph=self._cfg_inf[ct.PYTORCH]
         )
       
+      device = next(th_graph.model.parameters()).device
+      self.log.p('Pytorch model running on {}'.format(device.type.upper()))
+      
       #infer
       lst_imgs = list(self.dct_imgs.values())
       self.log.p('Running inference ...')
@@ -154,6 +157,10 @@ class VaporBoxCheck(LummetryObject):
         log=self.log,
         config_graph=self._cfg_inf[ct.TENSORFLOW]
         )
+      
+      lst_gpus = self.log.get_gpu()
+      device = 'CPU' if not lst_gpus else 'GPU'
+      self.log.p('Tensorflow model running on  {}'.format(device))
       
       #infer
       lst_imgs = list(self.dct_imgs.values())

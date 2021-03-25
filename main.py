@@ -32,3 +32,17 @@ if __name__ == '__main__':
   vbc = VaporBoxCheck(log=log, DEBUG=True)
   vbc.run()
   
+
+  
+  
+  # import torch
+  # model = torch.hub.load('pytorch/vision:v0.9.0', 'mobilenet_v2', pretrained=True)
+  # model.eval()
+  
+
+  
+  # #load
+  # import torch as th
+  # from torchvision.models import mobilenet_v2
+  # model = mobilenet_v2(pretrained=False)
+  # model.load_state_dict(th.load('mobilenetv2.th'))
