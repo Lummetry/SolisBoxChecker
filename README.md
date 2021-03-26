@@ -42,3 +42,7 @@ Below you can find a range of outputs after testing the script on different oper
 3. MacOS Results:
 
 ![MacOS Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/macos.png)
+
+4. JetsonTX2 Results:
+
+![JetsonTX2 Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/jetson.png)
