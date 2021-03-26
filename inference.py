@@ -69,6 +69,7 @@ class PytorchGraph(LummetryObject):
     model.to(self.DEVICE)
     
     # device = next(model.parameters()).device
+    
     # self.log.p('Pytorch model running on: {}'.format(device))
     
     self.model = model
@@ -111,8 +112,7 @@ class PytorchGraph(LummetryObject):
       elif isinstance(images, th.Tensor):
         assert len(images.size()) == 4, 'Tensor should be of form NCHW'
         th_x = images
-        if self.IS_CUDA_AVAILABLE and not th_x.is_cuda:
-          th_x = th_x.to(self.DEVICE)              
+        th_x = th_x.to(self.DEVICE)     
       else:
         raise ValueError('Tensor not properly processed!')
       #endif
@@ -176,9 +176,10 @@ class PytorchGraph(LummetryObject):
 
 
 class TensorflowGraph(LummetryObject):
-  def __init__(self, config_graph, **kwargs):
+  def __init__(self, config_graph, on_gpu=True, **kwargs):
     self.__version__ = __version__
     self.config_graph = config_graph
+    self.on_gpu = on_gpu
     self.tf_runoptions = tf.RunOptions(report_tensor_allocations_upon_oom=True)
     super().__init__(**kwargs)
     return
@@ -232,7 +233,14 @@ class TensorflowGraph(LummetryObject):
     self.input_tensor_name = self.config_graph["INPUT_TENSOR_NAME"]
     self.numdet_tensor_name = self.config_graph["NUMDET_TENSOR_NAME"]
     
-    self.sess = tf.Session(graph=graph)
+    config = tf.ConfigProto(
+      log_device_placement=True,
+      device_count=None if self.on_gpu else {'GPU': 0}
+      )
+    self.sess = tf.Session(
+      graph=graph,
+      config=config
+      )
     self.tf_classes = self.sess.graph.get_tensor_by_name(self.classes_tensor_name+":0")
     self.tf_scores = self.sess.graph.get_tensor_by_name(self.scores_tensor_name+":0")
     self.tf_boxes = self.sess.graph.get_tensor_by_name(self.boxes_tensor_name+":0")
