@@ -69,14 +69,14 @@ class VaporBoxCheck(LummetryObject):
     system, release, version = self.log.platform()    
     lst_gpus = self.log.gpu_info()    
     sys_memory = self.log.get_machine_memory()
-    self._results['SYS_MEMORY'] = sys_memory
+    self._results['SYS_MEMORY'].append(sys_memory)
     self._results['SYS_PLATFORM'].append(system)
     if lst_gpus:
       self._results['GPU_NAME'] = lst_gpus[0]['NAME']
       self._results['GPU_MEMORY'] = lst_gpus[0]['TOTAL_MEM']
     else:
-      self._results['GPU_NAME'] = 'N/A'
-      self._results['GPU_MEMORY'] = 'N/A'
+      self._results['GPU_NAME'].append('N/A')
+      self._results['GPU_MEMORY'].append('N/A')
     return
   
   def _load_images(self):
@@ -167,6 +167,7 @@ class VaporBoxCheck(LummetryObject):
         self._results['TH_GPU_TIME'].append(total_time)
       else:
         self._results['TH_CPU_TIME'].append(total_time)
+        self._results['TH_GPU_TIME'].append('N/A')
       
       if device.type.upper() == 'CUDA':
         th_graph.DEVICE = th.device('cpu')
@@ -219,7 +220,7 @@ class VaporBoxCheck(LummetryObject):
         # tf.debugging.experimental.enable_dump_debug_info('dump.txt')
         major = int(tf.__version__[0])
         minor = int(tf.__version__[2])
-        assert major == 2 and int(minor) >= 1, 'Environment needs tensorflow >= 2.1.0'
+        assert major == 2 and int(minor) >= 0, 'Environment needs tensorflow >= 2.1.0, found: {}'.format(tf.__version__)
         self._results['TF_VER'].append(tf.__version__)
       except Exception as e:
         self.log.p('Tensorflow not loaded. Please check if Tensorflow is \
@@ -247,6 +248,8 @@ class VaporBoxCheck(LummetryObject):
         )
         total_time = _predict()
         self._results['TF_GPU_TIME'].append(total_time)
+      else:
+        self._results['TF_GPU_TIME'].append('N/A')
       #endif
       
       tf_graph = TensorflowGraph(
