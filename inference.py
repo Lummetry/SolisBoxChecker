@@ -68,9 +68,6 @@ class PytorchGraph(LummetryObject):
     model.load_state_dict(th.load(path))
     model.to(self.DEVICE)
     
-    # device = next(model.parameters()).device
-    
-    # self.log.p('Pytorch model running on: {}'.format(device))
     
     self.model = model
 
@@ -234,7 +231,7 @@ class TensorflowGraph(LummetryObject):
     self.numdet_tensor_name = self.config_graph["NUMDET_TENSOR_NAME"]
     
     config = tf.ConfigProto(
-      log_device_placement=True,
+      # log_device_placement=True,
       device_count=None if self.on_gpu else {'GPU': 0}
       )
     self.sess = tf.Session(

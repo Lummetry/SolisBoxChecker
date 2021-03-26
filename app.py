@@ -174,7 +174,13 @@ class VaporBoxCheck(LummetryObject):
         th_graph.model.to(th_graph.DEVICE)
         total_time = _predict()
         self._results['TH_CPU_TIME'].append(total_time)
-
+      
+      del th_graph.model
+      del th_graph
+      import gc
+      gc.collect()
+      th.cuda.empty_cache()
+      
       self._pytorch_ok = True
     except Exception as e:
       self.log.p(
