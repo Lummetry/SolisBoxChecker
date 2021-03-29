@@ -3,16 +3,16 @@ VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow
 
 ## Prerequisites:
 ### System Prerequisites:
-* Python >= v3.7
-#### _If GPU is available:_
-* NVIDIA driver compatible with CUDA >= v10.2 (Info URL: https://docs.nvidia.com/deploy/cuda-compatibility/index.html)
-* CUDA >= v10.2 (Info URL: https://developer.nvidia.com/cuda-downloads)
-* CUDNN >= v7.6.5 (Info URL: https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html)
+* Python >= v3.6
+* If GPU is available:
+*   NVIDIA driver compatible with CUDA >= v10.1 (Info URL: https://docs.nvidia.com/deploy/cuda-compatibility/index.html)
+*   CUDA >= v10.1 (Info URL: https://developer.nvidia.com/cuda-downloads)
+*   CUDNN >= v7.6 (Info URL: https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html)
 
 ### Box Libraries:
 * OpenCV >= 3.4.1 (Info URL: https://pypi.org/project/opencv-python/)
 * Pytorch >= 1.7.1 (Info URL: https://pytorch.org/get-started/locally/)
-* TensorflowGPU/Tensorflow >= 2.0.0 (Info URL: https://www.tensorflow.org/install)
+* TensorflowGPU/Tensorflow == 2.1.0 (Info URL: https://www.tensorflow.org/install)
 
 ## Preparing JetsonTx2 environment:
 Below you can find a range of outputs after testing the script on different operating systems, hardware platforms and environment setups.
