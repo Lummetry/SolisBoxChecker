@@ -2,7 +2,7 @@
 VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow frameworks. This application can be used as a test tool in order to test different deployment setups on a wide range of hardware and software setups.
 
 ## Preparing JetsonTx2 environment:
-Below you can find a range of outputs after testing the script on different operating systems, hardware platforms and environment setups.
+In order to setup NVIDIA Jetson Tx2 envrionment you can access following pdf for a stept by step tutorial: 
 [JetsonTx2 Setup](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/JetsonSetup.pdf)
 
 ## Preparing non-Jetson environments:
