@@ -37,6 +37,7 @@ NR_PERS = {
   '646.png' : 4,
   '748.png' : 4
   }
+NR_RUN_INF = 10
 
 __VER__ = '1.0.2'
 
@@ -59,7 +60,6 @@ class VaporBoxCheck(LummetryObject):
       'GPU_MEMORY': [],
       'OPENCV_VER': [],
       'TH_VER': [],
-      'TV_VER': [],
       'TF_VER': [],
       'TH_GPU_TIME': [],
       'TH_CPU_TIME': [],
@@ -100,13 +100,16 @@ class VaporBoxCheck(LummetryObject):
   
   def _run_pytorch(self):
     def _predict():
+      timer_name = th_graph._timer_name(ct.TIMER_SESSION_RUN)
+      self.log.reset_timer(timer_name)
+      
       device = next(th_graph.model.parameters()).device
       self.log.p('Pytorch model running on {}'.format(device.type.upper()))
       
       #infer
       lst_imgs = list(self.dct_imgs.values())
       self.log.p('Running inference ...')
-      for i in range(2):
+      for i in range(NR_RUN_INF):
         dct_inf = th_graph.predict(lst_imgs)
       
       #check results
@@ -116,11 +119,11 @@ class VaporBoxCheck(LummetryObject):
         str_msg='{} / {} images classified'.format(len(self.dct_imgs), len(self.dct_imgs)),
         color='g'
         )
-      
-      total_time = self.log.get_timing('PYTORCHGRAPH_' + ct.TIMER_PREDICT)
+            
+      total_time = self.log.get_timing(timer_name)
       time_per_frame = total_time / len(self.dct_imgs)
       self.log.p(
-        '{:.2f}s per frame, {:.2f}s per batch ({})'.format(
+        '{:.4f}s per frame, {:.4f}s per batch ({})'.format(
           time_per_frame,
           total_time,
           len(self.dct_imgs)
@@ -141,20 +144,8 @@ class VaporBoxCheck(LummetryObject):
         return
       #end try-except
       
-      try:
-        import torchvision as tv
-        self._results['TV_VER'].append(tv.__version__)
-      except Exception as e:
-        self.log.p('Torchvision not loaded. Please check if `torchvision` is configured \
-                   in the current environment')
-        self.log.p('Pytorch tests cannot run on the current environment.')
-        self.log.p('Exception: {}'.format(str(e)), color='r')
-        return
-      #end try-except
-      
       from inference import PytorchGraph
       self.log.p('Pytorch v{} working'.format(th.__version__))
-      self.log.p('Torchvision v{} working'.format(tv.__version__))
       
       #loading graph    
       th_graph = PytorchGraph(
@@ -191,10 +182,13 @@ class VaporBoxCheck(LummetryObject):
   
   def _run_tensorflow(self):
     def _predict():
+      timer_name = tf_graph._timer_name(ct.TIMER_SESSION_RUN)
+      self.log.reset_timer(timer_name)
+      
       #infer
       lst_imgs = list(self.dct_imgs.values())
       self.log.p('Running inference ...')
-      for i in range(2):
+      for i in range(NR_RUN_INF):
         dct_inf = tf_graph.predict(lst_imgs)
       
       #check results
@@ -208,10 +202,10 @@ class VaporBoxCheck(LummetryObject):
         color='g'
         )
       
-      total_time = self.log.get_timing('TENSORFLOWGRAPH_' + ct.TIMER_PREDICT)
+      total_time = self.log.get_timing(timer_name)
       time_per_frame = total_time / len(self.dct_imgs)
       self.log.p(
-        str_msg='{:.2f}s per frame, {:.2f}s per batch ({})'.format(
+        str_msg='{:.4f}s per frame, {:.4f}s per batch ({})'.format(
           time_per_frame,
           total_time,
           len(self.dct_imgs)
@@ -238,9 +232,6 @@ class VaporBoxCheck(LummetryObject):
       
       from inference import TensorflowGraph
       self.log.p('Tensorflow v{} working'.format(tf.__version__))
-      
-      #with tf.device('GPU') si in blocul acesta am toata partea de inferenta si de session run
-      #session run sa fie imbricat intr-un with device
       
       #loading graph      
       lst_gpus = self.log.get_gpu()

@@ -1,6 +1,28 @@
+"""
+Copyright 2019 Lummetry.AI (Knowledge Investment Group SRL). All Rights Reserved.
+
+
+* NOTICE:  All information contained herein is, and remains
+* the property of Knowledge Investment Group SRL.  
+* The intellectual and technical concepts contained
+* herein are proprietary to Knowledge Investment Group SRL
+* and may be covered by Romanian and Foreign Patents,
+* patents in process, and are protected by trade secret or copyright law.
+* Dissemination of this information or reproduction of this material
+* is strictly forbidden unless prior written permission is obtained
+* from Knowledge Investment Group SRL.
+
+
+@copyright: Lummetry.AI
+@author: Lummetry.AI
+@project: 
+@description:
+"""
+
 try:
   import torch as th
-  from torchvision.models import mobilenet_v2
+  # from torchvision.models import mobilenet_v2
+  from models import mobilenet_v2
 except:
   pass
 
@@ -115,7 +137,8 @@ class PytorchGraph(LummetryObject):
       #endif
       
       preds = self.model(th_x).cpu().numpy()
-    self.log.stop_timer(timer_name)
+    total_time = self.log.stop_timer(timer_name)
+    self.log.p('  TH inf: {}'.format(total_time))
     return preds
   
   def _preprocess_images(self, images):
@@ -224,11 +247,11 @@ class TensorflowGraph(LummetryObject):
 
     assert graph is not None, 'Graph not found!'
     
-    self.classes_tensor_name = self.config_graph["CLASSES_TENSOR_NAME"]
-    self.scores_tensor_name = self.config_graph["SCORES_TENSOR_NAME"]
-    self.boxes_tensor_name = self.config_graph["BOXES_TENSOR_NAME"]
-    self.input_tensor_name = self.config_graph["INPUT_TENSOR_NAME"]
-    self.numdet_tensor_name = self.config_graph["NUMDET_TENSOR_NAME"]
+    self.classes_tensor_name = self.config_graph['CLASSES_TENSOR_NAME']
+    self.scores_tensor_name = self.config_graph['SCORES_TENSOR_NAME']
+    self.boxes_tensor_name = self.config_graph['BOXES_TENSOR_NAME']
+    self.input_tensor_name = self.config_graph['INPUT_TENSOR_NAME']
+    self.numdet_tensor_name = self.config_graph['NUMDET_TENSOR_NAME']
     
     config = tf.ConfigProto(
       # log_device_placement=True,
@@ -238,11 +261,11 @@ class TensorflowGraph(LummetryObject):
       graph=graph,
       config=config
       )
-    self.tf_classes = self.sess.graph.get_tensor_by_name(self.classes_tensor_name+":0")
-    self.tf_scores = self.sess.graph.get_tensor_by_name(self.scores_tensor_name+":0")
-    self.tf_boxes = self.sess.graph.get_tensor_by_name(self.boxes_tensor_name+":0")
-    self.tf_numdet = self.sess.graph.get_tensor_by_name(self.numdet_tensor_name+":0")
-    self.tf_input = self.sess.graph.get_tensor_by_name(self.input_tensor_name+":0")
+    self.tf_classes = self.sess.graph.get_tensor_by_name(self.classes_tensor_name+':0')
+    self.tf_scores = self.sess.graph.get_tensor_by_name(self.scores_tensor_name+':0')
+    self.tf_boxes = self.sess.graph.get_tensor_by_name(self.boxes_tensor_name+':0')
+    self.tf_numdet = self.sess.graph.get_tensor_by_name(self.numdet_tensor_name+':0')
+    self.tf_input = self.sess.graph.get_tensor_by_name(self.input_tensor_name+':0')
     self.tensors_output = [self.tf_scores, self.tf_boxes, self.tf_classes]
     self.log.stop_timer(timer_name)
     return
@@ -258,7 +281,8 @@ class TensorflowGraph(LummetryObject):
       feed_dict={self.tf_input: images},
       options=self.tf_runoptions
       )
-    self.log.stop_timer(timer_name)
+    total_time = self.log.stop_timer(timer_name)
+    self.log.p('  TF inf: {}'.format(total_time))    
     return out_scores, out_boxes, out_classes
   
   def _postprocess_boxes(self, boxes, idx_image=0):
@@ -320,9 +344,9 @@ class TensorflowGraph(LummetryObject):
           continue
         if frame_scores[_id] >= self.probas[idx_class]:
           frame_data.append({
-                "TLBR_POS":np.around(frame_boxes[_id]).tolist(), # [TOP, LEFT, BOTTOM, RIGHT]
-                "PROB_PRC":np.around(frame_scores[_id] * 100).item(),
-                "TYPE": _type
+                'TLBR_POS':np.around(frame_boxes[_id]).tolist(), # [TOP, LEFT, BOTTOM, RIGHT]
+                'PROB_PRC':np.around(frame_scores[_id] * 100).item(),
+                'TYPE': _type
               })
       #end frame iter      
       batch_frames.append(frame_data)
