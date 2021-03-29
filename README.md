@@ -19,10 +19,12 @@ Below you can find a range of outputs after testing the script on different oper
 [JetsonTx2 Setup](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/JetsonSetup.pdf)
 
 ## Preparing non-Jetson environments:
-    <br>`conda create -n vaporbox anaconda opencv python=3.7`
-    <br>`conda activate vaporbox`
-    <br>`conda install -c anaconda tensorflow-gpu==2.1.0`
-    <br>`conda install pytorch torchvision -c pytorch`
+    ```
+    conda create -n vaporbox anaconda opencv python=3.7
+    conda activate vaporbox
+    conda install -c anaconda tensorflow-gpu==2.1.0
+    conda install pytorch torchvision -c pytorch
+    ```
     
 ## Running VaporBoxCheck
 2. Git clone the project (including submodules): 
