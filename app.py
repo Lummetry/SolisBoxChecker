@@ -30,6 +30,8 @@ from libraries_pub import LummetryObject
 
 LBL_PERS = [ct.LBL_PERSON, ct.LBL_PERSOANA]
 
+CLF_OBJECTS = ['apple', 'chair', 'mountain_bike', 'soccer_ball', 'tabby']
+
 NR_PERS = {
   '1.png'   : 3,
   '207.png' : 4,
@@ -37,7 +39,7 @@ NR_PERS = {
   '646.png' : 4,
   '748.png' : 4
   }
-NR_RUN_INF = 10
+NR_RUN_INF = 3
 
 __VER__ = '1.0.2'
 
@@ -80,20 +82,35 @@ class VaporBoxCheck(LummetryObject):
     return
   
   def _load_images(self):
+    def _load(path_images):
+      lst_names = list(sorted(os.listdir(path_images)))
+      lst_paths = [os.path.join(path_images, x) for x in lst_names]
+      lst_imgs = [cv2.imread(x) for x in lst_paths]
+      return lst_names, lst_imgs
+    #enddef
+    
     try:
       import cv2
       if self.DEBUG:
-        self.log.p('Loading images')
+        self.log.p('Loading images classification')
       path_images = os.path.join(
         self.log.get_data_folder(), 
-        self.config_data[ct.PATH_IMAGES]
+        self.config_data[ct.PATH_IMAGES_CLASSIFICATION]
         )
-      lst_names = os.listdir(path_images)
-      lst_paths = [os.path.join(path_images, x) for x in lst_names]
-      lst_imgs = [cv2.imread(x) for x in lst_paths]
-      self.dct_imgs = dict(zip(lst_names, lst_imgs))
+      lst_names, lst_imgs = _load(path_images)
+      self.dct_imgs_classification = dict(zip(lst_names, lst_imgs))
+      
+      
+      path_images = os.path.join(
+        self.log.get_data_folder(), 
+        self.config_data[ct.PATH_IMAGES_DETECTION]
+        )
+      lst_names, lst_imgs = _load(path_images)
+      self.dct_imgs_detection = dict(zip(lst_names, lst_imgs))
+      
       if self.DEBUG:
-        self.log.p('{} images loaded'.format(len(self.dct_imgs)))
+        self.log.p('{} classification images loaded'.format(len(self.dct_imgs_classification)))
+        self.log.p('{} detection images loaded'.format(len(self.dct_imgs_detection)))
     except:
       self.log.p('Images could not be loaded', 'r')
     return
@@ -107,26 +124,36 @@ class VaporBoxCheck(LummetryObject):
       self.log.p('Pytorch model running on {}'.format(device.type.upper()))
       
       #infer
-      lst_imgs = list(self.dct_imgs.values())
+      lst_imgs = list(self.dct_imgs_classification.values())
       self.log.p('Running inference ...')
       for i in range(NR_RUN_INF):
         dct_inf = th_graph.predict(lst_imgs)
       
       #check results
       lst_inf = dct_inf[ct.INFERENCES]
-      lst_inf = list(itertools.chain.from_iterable(lst_inf))
+      lst_classes = [x['TYPE'] for x in lst_inf]
+      lst = list(zip(lst_classes, CLF_OBJECTS))
+      s = ''
+      for i,x in enumerate(lst):
+        s+= '{}/{}'.format(x[0], x[1])
+        if i < len(lst) - 1:
+          s+= ', '
+      # self.log.p('Classification results: {}'.format(s))
+      
+      nr_missed = len(set(CLF_OBJECTS) - set(lst_classes))
+      nr_identified = len(CLF_OBJECTS) - nr_missed
       self.log.p(
-        str_msg='{} / {} images classified'.format(len(self.dct_imgs), len(self.dct_imgs)),
+        str_msg='{}/{} images correctly classified'.format(nr_identified, len(self.dct_imgs_classification)),
         color='g'
         )
             
       total_time = self.log.get_timing(timer_name)
-      time_per_frame = total_time / len(self.dct_imgs)
+      time_per_frame = total_time / len(self.dct_imgs_classification)
       self.log.p(
         '{:.4f}s per frame, {:.4f}s per batch ({})'.format(
           time_per_frame,
           total_time,
-          len(self.dct_imgs)
+          len(self.dct_imgs_classification)
         ),
         color='g'
         )
@@ -186,7 +213,7 @@ class VaporBoxCheck(LummetryObject):
       self.log.reset_timer(timer_name)
       
       #infer
-      lst_imgs = list(self.dct_imgs.values())
+      lst_imgs = list(self.dct_imgs_detection.values())
       self.log.p('Running inference ...')
       for i in range(NR_RUN_INF):
         dct_inf = tf_graph.predict(lst_imgs)
@@ -203,12 +230,12 @@ class VaporBoxCheck(LummetryObject):
         )
       
       total_time = self.log.get_timing(timer_name)
-      time_per_frame = total_time / len(self.dct_imgs)
+      time_per_frame = total_time / len(self.dct_imgs_detection)
       self.log.p(
         str_msg='{:.4f}s per frame, {:.4f}s per batch ({})'.format(
           time_per_frame,
           total_time,
-          len(self.dct_imgs)
+          len(self.dct_imgs_detection)
           ),
         color='g'
         )
@@ -243,6 +270,7 @@ class VaporBoxCheck(LummetryObject):
         config_graph=self._cfg_inf[ct.TENSORFLOW],
         on_gpu=True
         )
+        self.log.p('Tensorflow model running on GPU')
         total_time = _predict()
         self._results['TF_GPU_TIME'].append(total_time)
       else:
@@ -254,6 +282,7 @@ class VaporBoxCheck(LummetryObject):
         config_graph=self._cfg_inf[ct.TENSORFLOW],
         on_gpu=False
         )
+      self.log.p('Tensorflow model running on CPU')
       total_time = _predict()
       self._results['TF_CPU_TIME'].append(total_time)
       

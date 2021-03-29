@@ -30,6 +30,11 @@ try:
 except:
   pass
 
+try:
+  import cv2
+except:
+  pass
+
 import os
 import numpy as np
 import constants as ct
@@ -54,6 +59,7 @@ class PytorchGraph(LummetryObject):
     self.config_graph = config_graph
     self.IS_CUDA_AVAILABLE = th.cuda.is_available()
     self.DEVICE = th.device(ct.CUDA0 if self.IS_CUDA_AVAILABLE else ct.CPU)
+    self.last_run = 0
     super().__init__(**kwargs)
     return
   
@@ -88,13 +94,13 @@ class PytorchGraph(LummetryObject):
     model = mobilenet_v2(pretrained=False)
     model.load_state_dict(th.load(path))
     model.to(self.DEVICE)
-    
+    model.eval()
     
     self.model = model
 
     if self.DEBUG:    
       self.log.p('Setting model to {} and eval mode.'.format(self.DEVICE))
-    self.model.to(self.DEVICE).eval()
+    
     if self.DEBUG:
       self.log.p('Model on CUDA {}. Mode : {}'.format(
       next(self.model.parameters()).is_cuda, not self.model.training)
@@ -105,10 +111,10 @@ class PytorchGraph(LummetryObject):
   def _postprocess_inference(self, preds):
     if isinstance(preds, list):
       preds = preds[0]
-    np_preds = preds.argmax(axis=-1)
-    np_probs = np.take(preds, np_preds)
+    np_argmax = preds.argmax(axis=-1)
+    np_probs = preds.max(axis=-1)
     np_probs = np.around(np_probs * 100, decimals=2)
-    lst_preds = list(zip(np_preds, np_probs))
+    lst_preds = list(zip(np_argmax, np_probs))
     lst_out = []
     for idx, proba in lst_preds:
       lbl = idx if not hasattr(self, 'classes') else self.classes[idx]
@@ -117,7 +123,7 @@ class PytorchGraph(LummetryObject):
           lst_out.append({ 'PROB_PRC': proba, 'TYPE': lbl })
       else:
         lst_out.append({ 'PROB_PRC': proba, 'TYPE': lbl })
-      #end frame iter      
+      #end frame iter    
     return lst_out
   
   def _predict(self, images):
@@ -135,26 +141,23 @@ class PytorchGraph(LummetryObject):
         raise ValueError('Tensor not properly processed!')
       #endif
       
-      preds = self.model(th_x).cpu().numpy()
-    total_time = self.log.stop_timer(timer_name)
-    self.log.p('  TH inf: {}'.format(total_time))
-    return preds
+      th_preds = self.model(th_x)
+      th_probs = th.nn.functional.softmax(th_preds, dim=-1)
+      probs = th_probs.cpu().numpy()            
+    self.last_run = self.log.stop_timer(timer_name)
+    return probs
   
   def _preprocess_images(self, images):
     timer_name = self._timer_name(name=ct.TIMER_PREPROCESS_IMAGES)
     self.log.start_timer(timer_name)
-    transform = transforms.Compose([
-      transforms.Lambda(lambda x: x[:,:,::-1]),
-      transforms.ToPILImage(),
-      transforms.Resize(256),
-      transforms.CenterCrop(224),
-      transforms.ToTensor(),
-      transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
     lst = []
-    for image in images:
-      th_i = transform(image)
-      th_i = th_i.unsqueeze(0)
+    for img in images:
+      img = self.log.center_bgr_image(img, 224, 224)
+      img_rgb = img[:,:,::-1]
+      img_rgb = img_rgb / 255
+      img_rgb = (img_rgb - [0.485, 0.456, 0.406]) / [0.229, 0.224, 0.225]
+      img_rgb = np.transpose(img_rgb, [2, 0, 1])
+      th_i = th.tensor(img_rgb, dtype=th.float32).unsqueeze(0)
       lst.append(th_i)
     th_x = th.cat(lst, axis=0)
     self.log.stop_timer(timer_name)
@@ -186,6 +189,8 @@ class PytorchGraph(LummetryObject):
       result = self._run_inference(images)
     #endif
     
+    lst = ['{}({:.2f}%)'.format(x['TYPE'], x['PROB_PRC']) for x in result]
+    self.log.p('  TH inf: {:.5f}, Detections: {}'.format(self.last_run, lst))
     dct_meta['SYSTEM_TIME'] = timestamp
     dct_meta['VER'] = self.__version__
     dct_result['METADATA'] = dct_meta
@@ -281,7 +286,7 @@ class TensorflowGraph(LummetryObject):
       options=self.tf_runoptions
       )
     total_time = self.log.stop_timer(timer_name)
-    self.log.p('  TF inf: {}'.format(total_time))    
+    self.log.p('  TF inf: {:.5f}'.format(total_time))    
     return out_scores, out_boxes, out_classes
   
   def _postprocess_boxes(self, boxes, idx_image=0):
