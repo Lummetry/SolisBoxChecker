@@ -21,7 +21,6 @@ Copyright 2019 Lummetry.AI (Knowledge Investment Group SRL). All Rights Reserved
 
 try:
   import torch as th
-  # from torchvision.models import mobilenet_v2
   from models import mobilenet_v2
 except:
   pass
