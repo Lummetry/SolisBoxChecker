@@ -12,7 +12,6 @@ VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow
 ### Box Libraries:
 * OpenCV >= 3.4.1 (Info URL: https://pypi.org/project/opencv-python/)
 * Pytorch >= 1.7.1 (Info URL: https://pytorch.org/get-started/locally/)
-* Torchvision >= 0.8.2 (Info URL: https://pytorch.org/get-started/locally/)
 * TensorflowGPU/Tensorflow >= 2.0.0 (Info URL: https://www.tensorflow.org/install)
 
 ## Example outputs:
