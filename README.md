@@ -14,16 +14,17 @@ VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow
 * Pytorch >= 1.7.1 (Info URL: https://pytorch.org/get-started/locally/)
 * TensorflowGPU/Tensorflow >= 2.0.0 (Info URL: https://www.tensorflow.org/install)
 
-## Example outputs:
+## Preparing JetsonTx2 environment:
 Below you can find a range of outputs after testing the script on different operating systems, hardware platforms and environment setups.
 [JetsonTx2 Setup](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/JetsonSetup.pdf)
 
-## Running application:
-1. Create environment:
+## Preparing non-Jetson environments:
     <br>`conda create -n vaporbox anaconda opencv python=3.7`
     <br>`conda activate vaporbox`
     <br>`conda install -c anaconda tensorflow-gpu==2.1.0`
     <br>`conda install pytorch torchvision -c pytorch`
+    
+## Running VaporBoxCheck
 2. Git clone the project (including submodules): 
     <br>`git clone https://github.com/Lummetry/VaporBoxCheck.git --recurse-submodules`
 3. Go to project folder: `cd VaporBoxCheck`
