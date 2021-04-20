@@ -30,16 +30,10 @@ try:
 except:
   pass
 
-try:
-  import cv2
-except:
-  pass
-
 import os
 import numpy as np
 import constants as ct
 
-from torchvision import transforms
 from collections import OrderedDict
 from libraries_pub import LummetryObject
 
