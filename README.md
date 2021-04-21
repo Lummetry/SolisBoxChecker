@@ -59,9 +59,11 @@ After cloning repo run proceed with the following steps:
 >cd ipc_test
 >python client.py
 ```
-_OBS: if you start the shell in (repo_folder)/ipc_test directly then you can bypass the `cd` command_
+_OBS: if you start the shell in `(repo_folder)/ipc_test` directly then you can bypass the `cd` command_
 
-Now you should see outputs from both client and server as below. Provided source code has various comments and suggestions.
+Now you should see outputs from both client and server as below. The simulation takes into accounting both inference as well as 
+post processing operations on the data received from the "transcoder".
+Provided source code has various comments and suggestions.
 
 #### Server output
 ![Server](https://github.com/Lummetry/VaporBoxCheck/blob/main/ipc_img1.png)
