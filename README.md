@@ -1,5 +1,6 @@
 # VaporBoxCheck
 VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow frameworks. This application can be used as a test tool in order to test different deployment setups on a wide range of hardware and software setups.
+See at the bottom of readme instructions regarding IPC tests between python modules on devices.
 
 ## Preparing NVIDIA Jetson environment:
 In order to setup NVIDIA Jetson envrionment you can access following pdf for a stept-by-step tutorial:
@@ -42,3 +43,19 @@ Below you can find a range of outputs after testing the script on different oper
 4. JetsonTX2 Results:
 
 ![JetsonTX2 Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/jetson.png)
+
+
+## IPC Tests
+
+After cloning repo run proceed with the following steps:
+
+start a shell and enter folder where repo has been cloned then run:
+```
+python ipc_test/server.py
+```
+then start a second shell and run:
+```
+python ipc_test/client.py
+```
+
+Now you should see outputs from both client and server. Code has various comments and suggestions.
