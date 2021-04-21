@@ -20,6 +20,7 @@ Copyright 2019 Lummetry.AI (Knowledge Investment Group SRL). All Rights Reserved
 @description:
 """
 
-SERVER_URI = ''
-SERVER_PORT = 5959
+SERVER_URI = '127.0.0.1'
+SERVER_PORT = 7979
 SERVER_PASS = b'lummetry'
+MAX_QUEUE = 1000
