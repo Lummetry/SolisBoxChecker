@@ -26,7 +26,7 @@ from multiprocessing.connection import Client
 from threading import Thread
 from collections import deque
 
-from ipc_test.config import SERVER_PORT, SERVER_URI, SERVER_PASS, MAX_QUEUE
+from config import SERVER_PORT, SERVER_URI, SERVER_PASS, MAX_QUEUE
 
 
 class VaporBoxSimulator:
@@ -70,7 +70,7 @@ class VaporBoxSimulator:
       (self._server_address, self._server_port), 
       authkey=self._password
       )
-    self._add_log("CLNT: connection accepted")
+    self._add_log("CLNT: connection established")
     
     # it is important to have a receiver thread that receives incoming data at 
     # a different rate that then thread that processes it and sends
@@ -87,6 +87,7 @@ class VaporBoxSimulator:
     n_rcv = 0
     MSG_TO_DISPLAY = 5
     zero_imgs = 0
+    self._add_log('CLNT: startig receiver thread...')
     while not self._done:
       # check if something is available
       sleep(0.1)
@@ -115,6 +116,7 @@ class VaporBoxSimulator:
     n_snd = 0
     MSG_TO_DISPLAY = 5
     zero_imgs = 0
+    self._add_log('CLNT: startig processer thread...')
     while not self._done:
       # check if something is available
       sleep(0.1)

@@ -49,13 +49,22 @@ Below you can find a range of outputs after testing the script on different oper
 
 After cloning repo run proceed with the following steps:
 
-start a shell and enter folder where repo has been cloned then run:
+1. Start a shell and enter folder where repo has been cloned then run:
 ```
-python ipc_test/server.py
+>cd ipc_test
+>python server.py
 ```
-then start a second shell and run:
+2. Start a second shell from the same repo folder and run:
 ```
-python ipc_test/client.py
+>cd ipc_test
+>python client.py
 ```
+_OBS: if you start the shell in (repo_folder)/ipc_test directly then you can bypass the `cd` command_
 
-Now you should see outputs from both client and server. Code has various comments and suggestions.
+Now you should see outputs from both client and server as below. Provided source code has various comments and suggestions.
+
+#### Server output
+![Server](https://github.com/Lummetry/VaporBoxCheck/blob/main/ipc_img1.png)
+#### Client output
+![Client](https://github.com/Lummetry/VaporBoxCheck/blob/main/ipc_img2.png)
+

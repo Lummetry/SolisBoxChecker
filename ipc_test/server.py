@@ -26,7 +26,7 @@ from multiprocessing.connection import Listener
 from threading import Thread
 from collections import deque
 
-from ipc_test.config import SERVER_PORT, SERVER_URI, SERVER_PASS, MAX_QUEUE
+from config import SERVER_PORT, SERVER_URI, SERVER_PASS, MAX_QUEUE
 
 
 class TranscoderSimulator:
