@@ -31,7 +31,7 @@ from config import SERVER_PORT, SERVER_URI, SERVER_PASS, MAX_QUEUE
 
 class TranscoderSimulator:
   """
-  simple server that handles just one client connection
+  simple server that handles multiple connections each with its own parallel process
   """
   def __init__(self, server_address=None, server_port=None, password=None):    
     self._server_port = SERVER_PORT if server_port is None else server_port
@@ -82,44 +82,68 @@ class TranscoderSimulator:
     """
     setup server and thread - no connection here in order not to block python process
     """
+    self._connections = []
+    self._threads = []
     self._listener = Listener(
       address=(self._server_address, self._server_port),
       authkey=self._password
       )
-    self._thread = Thread(target=self._runner)
+    self._thread = Thread(target=self._run_connection_manager)
+    return
+  
+  def _run_connection_manager(self):
+    self._done = False
+    self._add_log("SVR: listening for connections...")
+    while not self._done:
+      new_conn = self._listener.accept()
+      self._add_log("SVR: connection accepted")
+      self._connections.append(new_conn)
+      conn_id = len(self._connections) - 1
+      new_thread = Thread(target=self._runner, args=(conn_id,))
+      self._threads.append(new_thread)
+      new_thread.start()
+      self._add_log("SVR: connection thread {} started!".format(conn_id))
+    self._add_log("SVR: exiting connection manager!")
     return
       
   
-  def _runner(self):
+  def _runner(self, conn_id):
     """
       This code runs in parallel with the main process and it handles both sending
       and added new payloads to internal buffers that can be consumed from external
       threads
     """
-    self._add_log("SVR: listening for connections...")
-    self._conn = self._listener.accept()
-    self._add_log("SVR: connection accepted")
-    self._done = False
+    # this next line is blocking so we need it enclosed in a thread
+    connection = self._connections[conn_id]
+    local_done = False
     n_snd, n_rcv = 0, 0
-    MSG_TO_DISPLAY = 5
-    while not self._done:
-      # check if something is available
-      if self._conn.poll():
-        buff = self._conn.recv()
-        n_rcv += 1
-        self._processed.append(buff)
-        if (n_rcv % MSG_TO_DISPLAY) == 0:
-          self._add_log('SVR: received processed buffer ({})'.format(n_rcv))
-          
-      # now we send a package if any is available from a external process
-      # that is main process in our case
-      if self.has_to_send():
-        n_snd += 1
-        buff_to_send = self._to_send.popleft()
-        self._conn.send(buff_to_send)    
-        if (n_snd % MSG_TO_DISPLAY) == 0:
-          self._add_log('SVR: delivered raw buffer ({})'.format(n_snd))
+    MSG_TO_DISPLAY = 10
+    self._add_log('SVR-C({}): starting process ...'.format(conn_id))
+    while not local_done:
+      try:
+        # check if something is available
+        if connection.poll():
+          buff = connection.recv()
+          n_rcv += 1
+          self._processed.append(buff)
+          if (n_rcv % MSG_TO_DISPLAY) == 0:
+            self._add_log('SVR-C({}): received processed buffer ({})'.format(conn_id, n_rcv))
+            
+        # now we send a package if any is available from a external process
+        # that is main process in our case
+        if self.has_to_send():
+          n_snd += 1
+          buff_to_send = self._to_send.popleft()
+          connection.send(buff_to_send)    
+          if (n_snd % MSG_TO_DISPLAY) == 0:
+            self._add_log('SVR-C({}): delivered raw buffer ({})'.format(conn_id, n_snd))
+      except:
+        # if something goes wrong then the connection is done...
+        local_done = True
+
       sleep(0.05)
+    #end while
+    self._add_log('SVR-C({}): TERMINATED'.format(conn_id))
     return        
     
   
