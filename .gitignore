@@ -130,3 +130,5 @@ dmypy.json
 _vapor_box_check/_logs/
 
 _vapor_box_check/_output/
+
+_cache/_logs/

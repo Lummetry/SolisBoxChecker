@@ -20,7 +20,10 @@ Copyright 2019 Lummetry.AI (Knowledge Investment Group SRL). All Rights Reserved
 @description:
 """
 
-class SimpleClient:
+from libraries.logger import Logger
+from libraries.generic_obj import LummetryObject
+
+class SimpleClient(LummetryObject):
   def __init__(self):
     return
   
