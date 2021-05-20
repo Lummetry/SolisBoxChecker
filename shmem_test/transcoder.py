@@ -208,13 +208,6 @@ class SimpleServer(LummetryObject):
   def stop_streams(self):
     for stream in self.streams:
       stream['STREAM_OBJECT'].stop_stream()
-      cbobj = stream['CALLBACK_OBJECT']
-      self.P("Stream {} delivered {} and received {} frames. Missing {} specific frames.".format(
-        cbobj.name,
-        len(cbobj._sent),
-        len(cbobj._received),
-        len(set(cbobj._sent) - set(cbobj._received)),
-        ))
     return
   
   def shutdown(self, wait_time=10):
@@ -227,6 +220,15 @@ class SimpleServer(LummetryObject):
       sleep(1)
       self.dump_log()
       shutdown_time = time() - start_shutdown
+
+    for stream in self.streams:
+      cbobj = stream['CALLBACK_OBJECT']
+      self.P("Stream {} delivered {} and received {} frames. Missing {} specific frames.".format(
+        cbobj.name,
+        len(cbobj._sent),
+        len(cbobj._received),
+        len(set(cbobj._sent) - set(cbobj._received)),
+        ))
     self.P("Server stopped.")  
     
 
