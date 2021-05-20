@@ -146,7 +146,14 @@ class SimpleStreamCalbackHelper:
     # "from_client" is NOT sync-ed (same package) with above `np_img`
     from_client = self._read_data_from_client()
     if from_client is not None:
-      self._process_data_from_client(from_client)    
+      self._process_data_from_client(from_client)
+      recv = len(self._received)
+      if (recv % 100) == 0:
+        self.log_info('Received {} frames based on current stream. Missing {} distinct frames'.format(
+          recv,
+          len(set(self._sent) - set(self._received)),
+          ))
+      
     return
   
     

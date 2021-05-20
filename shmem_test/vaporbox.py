@@ -54,6 +54,7 @@ class SimpleClient(LummetryObject):
         'WRITE' : pseudo_shmem_outgoing,
         'RECEIVED' : [],
         'SENT'     : [],
+        'CHECK' : -1,
         }
     return
         
@@ -107,6 +108,20 @@ class SimpleClient(LummetryObject):
     self.log.stop_timer('push_data')    
     return res
   
+  def _stats(self):
+    for stream_name in self.streams:
+      vvv = self.streams[stream_name]['CHECK']
+      rcv = self.streams[stream_name]['RECEIVED']
+      lost = sorted(list(set(np.arange(1, vvv+1)) - set(rcv)))
+      cnt = len(rcv)
+      self.P("So far received {} frames from stream: {}. Looks like lost {} frames in process{}.".format(
+        cnt,
+        stream_name,
+        len(lost), 
+        " (eg. {}...)".format(lost[:10]) if len(lost) > 0 else "",
+        ))
+    
+  
   def _process_data(self, data, stream_name):
     self.log.start_timer('process_data')
     img_h = data[HEIGHT_KEY]
@@ -115,20 +130,15 @@ class SimpleClient(LummetryObject):
     img_data = data[BUFFER_KEY]
     np_data = np.frombuffer(img_data, dtype=np.uint16) # uint16 due to fake data
     vvv = np_data[0]
+    self.streams[stream_name]['CHECK'] = vvv
     np_img = np_data.reshape((img_h, img_w, img_c))
     self.streams[stream_name]['RECEIVED'].append(vvv)
     rcv = self.streams[stream_name]['RECEIVED']
     cnt = len(rcv)
     if cnt == 1:
-      self.P("Data receiving from {} started".format(stream_name))
+      self.P("Started receiving from {}.".format(stream_name))
     if (cnt % 100) == 0:
-      lost = sorted(list(set(np.arange(1, vvv+1)) - set(rcv)))
-      self.P("So far received {} frames from stream: {}. Looks like lost {} frames in process {}.".format(
-        cnt,
-        stream_name,
-        len(lost), 
-        "(eg. {}...)".format(lost[:10]) if len(lost) > 0 else "",
-        ))
+      self._stats()
     self.log.stop_timer('process_data')
     return np_img
   
@@ -151,7 +161,8 @@ class SimpleClient(LummetryObject):
             # this can be replaced with binary value and reconstructed in C/C++
             self._push_data(np_img, stream_name)
       self.log.stop_timer('main_loop')
-    self.P("Closing AI main loop.")
+    self.P("Closing AI main loop...")
+    self._stats()
     return
         
 if __name__ == '__main__':
