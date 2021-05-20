@@ -108,6 +108,7 @@ class SimpleClient(LummetryObject):
     return
   
   def _process_data(self, data, stream_name):
+    self.log.start_timer('process_data')
     img_h = data[HEIGHT_KEY]
     img_w = data[WIDTH_KEY]
     img_c = data[CHANNEL_KEY]
@@ -128,13 +129,19 @@ class SimpleClient(LummetryObject):
         len(lost), 
         "(eg. {}...)".format(lost[:10]) if len(lost) > 0 else "",
         ))
+    self.log.stop_timer('process_data')
     return np_img
+  
+  def shutdown(self):
+    self._done_processing = True
+    return
   
   def main_loop(self):
     self.P("Starting AI main loop. Press Ctrl-C to stop.")
     self._init_shmem()
     self.send_alive_signal()
     while not self._done_processing:
+      self.log.start_timer('main_loop')
       sleep(0.0005) # for process yielding
       for stream_name in self.streams:
         data = self._pop_data(stream_name)
@@ -143,12 +150,15 @@ class SimpleClient(LummetryObject):
             # now we send back directly the np_img just for testing purposes
             # this can be replaced with binary value and reconstructed in C/C++
             self._push_data(np_img, stream_name)
+      self.log.stop_timer('main_loop')
     self.P("Closing AI main loop.")
     return
         
 if __name__ == '__main__':
   l = Logger('VB', base_folder='.', app_folder='_cache')
   vb = SimpleClient(log=l)
+  l.register_close_callback(vb.shutdown)
   vb.main_loop() 
+  l.show_timers()
   
         
