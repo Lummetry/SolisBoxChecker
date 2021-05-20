@@ -132,3 +132,5 @@ _vapor_box_check/_logs/
 _vapor_box_check/_output/
 
 _cache/_logs/
+
+_cache/_data/

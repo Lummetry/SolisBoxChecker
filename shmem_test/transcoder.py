@@ -101,6 +101,7 @@ class SimpleStreamCalbackHelper:
     return
 
   def _send_data_to_client(self, data):
+    self._data_counter += 1
     self._sent.append(self._data_counter)
     # now we write the shared memory location  
     self.start_timer('write_to_shmem')
@@ -159,33 +160,6 @@ class SimpleStreamCalbackHelper:
     # eg. concatentates frames and provides outgoing ML processed stream    
     return  
   
-  
-  def _stream_loop(self):
-    # one thread for each stream
-    self.log_info('Starting data aquisition and delivery')
-    while not self._stop_data:
-      # we aquire data from stream
-      np_img = self._read_from_stream()
-            
-      # we push data to client if we can
-      if self.can_send_to_client():
-        self._send_data_to_client(np_img)
-        if (self._data_counter % 100) == 0:
-          self.log_info('Delivered {} frames from current stream'.format(self._data_counter))
-      
-      from_client = self._read_data_from_client()
-      # "from_client" is NOT sync-ed (same package) with above `np_img`
-      if from_client is not None:
-        self._process_data_from_client(from_client)
-      
-    # now we received the stop signal
-    self.log_info('Closing stream {}'.format(self.name))
-    self.log_info('Delivered {} frames, received {} frames. Missing {} frames'.format(
-      len(self._sent),
-      len(self._received),
-      len(set(self._sent) - set(self._received)),
-      ))
-    
       
 
 class SimpleServer(LummetryObject):
