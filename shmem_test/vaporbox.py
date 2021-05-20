@@ -105,7 +105,7 @@ class SimpleClient(LummetryObject):
     self.log.start_timer('push_data')
     res = self._pseudo_shmem_write(data, stream_name)
     self.log.stop_timer('push_data')    
-    return
+    return res
   
   def _process_data(self, data, stream_name):
     self.log.start_timer('process_data')
