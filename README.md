@@ -4,7 +4,7 @@ See at the bottom of readme instructions regarding IPC tests between python modu
 
 ## Preparing NVIDIA Jetson environment:
 In order to setup NVIDIA Jetson envrionment you can access following pdf for a stept-by-step tutorial:
-[Jetson Setup](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/JetsonSetup.pdf).
+[Jetson Setup](https://github.com/Lummetry/VaporBoxCheck/blob/main/results/JetsonSetup.pdf).
 Please note that this step-by-step tutorial has been done using a TX2 Developer Kit device.
 
 ## Preparing non-Jetson environments:
