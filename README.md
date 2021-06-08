@@ -30,19 +30,19 @@ Below you can find a range of outputs after testing the script on different oper
 
 1. Windows Results:
 
-![Windows Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/windows.png)
+![Windows Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/results/windows.png)
 
 2. Ubuntu Results:
 
-![Ubuntu Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/ubuntu.png)
+![Ubuntu Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/results/ubuntu.png)
 
 3. MacOS Results:
 
-![MacOS Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/macos.png)
+![MacOS Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/results/macos.png)
 
 4. JetsonTX2 Results:
 
-![JetsonTX2 Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/_vapor_box_check/_output/jetson.png)
+![JetsonTX2 Results](https://github.com/Lummetry/VaporBoxCheck/blob/main/results/jetson.png)
 
 
 ## IPC Tests
@@ -66,7 +66,7 @@ post processing operations on the data received from the "transcoder".
 Provided source code has various comments and suggestions.
 
 #### Server output
-![Server](https://github.com/Lummetry/VaporBoxCheck/blob/main/ipc_img1.png)
+![Server](https://github.com/Lummetry/VaporBoxCheck/blob/main/results/ipc_img1.png)
 #### Client output
-![Client](https://github.com/Lummetry/VaporBoxCheck/blob/main/ipc_img2.png)
+![Client](https://github.com/Lummetry/VaporBoxCheck/blob/main/results/ipc_img2.png)
 
