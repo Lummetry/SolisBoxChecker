@@ -1,5 +1,5 @@
-# VaporBoxCheck
-VaporBoxCheck is a mini-app developed in Python that uses Pytorch and Tensorflow frameworks. This application can be used as a test tool in order to test different deployment setups on a wide range of hardware and software setups.
+# SolisBoxChecker
+SolisBoxChecker is a open-source mini-app developed in Python that uses Pytorch and Tensorflow frameworks. This application can be used as a test tool in order to test different deployment setups on a wide range of hardware and software setups.
 See at the bottom of readme instructions regarding IPC tests between python modules on devices.
 
 ## Preparing NVIDIA Jetson environment:
@@ -17,7 +17,7 @@ Please note that this step-by-step tutorial has been done using a TX2 Developer 
     conda install pytorch torchvision -c pytorch
 ```
     
-## Running VaporBoxCheck
+## Running SolisBoxChecker
 1. Git clone the project (including submodules): 
     <br>`git clone https://github.com/Lummetry/VaporBoxCheck.git --recurse-submodules`
 2. Go to project folder: `cd VaporBoxCheck`
