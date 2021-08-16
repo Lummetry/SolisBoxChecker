@@ -5,3 +5,4 @@
     "PATH_IMAGES_DETECTION": "images_detection",
     "PATH_IMAGES_CLASSIFICATION": "images_classification"
 }
+
