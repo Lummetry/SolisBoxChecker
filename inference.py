@@ -39,6 +39,7 @@ from libraries_pub import LummetryObject
 
 __version__ = '1.0.0.0'
 
+
 def save_th_mobilenetv2():
   #model prepare
   import torch as th

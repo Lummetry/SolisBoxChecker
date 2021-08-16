@@ -31,3 +31,4 @@ if __name__ == '__main__':
   
   vbc = VaporBoxCheck(log=log, DEBUG=True)
   vbc.run()
+  
