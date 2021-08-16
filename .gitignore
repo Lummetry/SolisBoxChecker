@@ -127,9 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-_vapor_box_check/_logs/
+_solis_box_check/_logs/
 
-_vapor_box_check/_output/
+_solis_box_check/_output/
 
 _cache/_logs/
 

@@ -1,6 +1,6 @@
 {
     "BASE_FOLDER": "",
-    "APP_FOLDER": "_vapor_box_check",
+    "APP_FOLDER": "_solis_box_check",
     
     "PATH_IMAGES_DETECTION": "images_detection",
     "PATH_IMAGES_CLASSIFICATION": "images_classification"
