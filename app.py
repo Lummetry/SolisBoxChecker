@@ -152,6 +152,8 @@ class VaporBoxCheck(LummetryObject):
         )
             
       total_time = self.log.get_timing(timer_name)
+      timer = self.log.get_timing(timer_name)
+      total_time = timer['END'] - timer['START']
       time_per_frame = total_time / len(self.dct_imgs_classification)
       self.log.p(
         '{:.4f}s per frame, {:.4f}s per batch ({})'.format(
@@ -249,7 +251,8 @@ class VaporBoxCheck(LummetryObject):
         color='g'
         )
       
-      total_time = self.log.get_timing(timer_name)
+      timer = self.log.get_timing(timer_name)
+      total_time = timer['END'] - timer['START']
       time_per_frame = total_time / len(self.dct_imgs_detection)
       self.log.p(
         str_msg='{:.4f}s per frame, {:.4f}s per batch ({})'.format(
