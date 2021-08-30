@@ -22,11 +22,14 @@ Copyright 2019 Lummetry.AI (Knowledge Investment Group SRL). All Rights Reserved
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+import traceback
 import itertools
 import pandas as pd
 import constants as ct
 
+from app_monitor import ApplicationMonitor
 from libraries_pub import LummetryObject
+
 
 LBL_PERS = [ct.LBL_PERSON, ct.LBL_PERSOANA]
 
@@ -71,6 +74,7 @@ class VaporBoxCheck(LummetryObject):
     system, release, version = self.log.platform()    
     lst_gpus = self.log.gpu_info()    
     sys_memory = self.log.get_machine_memory()
+    self.app_monitor = ApplicationMonitor(log=self.log)
     self._results['SYS_MEMORY'].append(sys_memory)
     self._results['SYS_PLATFORM'].append(system)
     if lst_gpus:
@@ -79,7 +83,7 @@ class VaporBoxCheck(LummetryObject):
     else:
       self._results['GPU_NAME'].append('N/A')
       self._results['GPU_MEMORY'].append('N/A')
-    return
+    return  
   
   def _load_images(self):
     def _load(path_images):
@@ -116,7 +120,7 @@ class VaporBoxCheck(LummetryObject):
     return
   
   def _run_pytorch(self):
-    def _predict():
+    def _predict(th_graph):
       timer_name = th_graph._timer_name(ct.TIMER_SESSION_RUN)
       self.log.reset_timer(timer_name)
       
@@ -173,25 +177,40 @@ class VaporBoxCheck(LummetryObject):
       
       from inference import PytorchGraph
       self.log.p('Pytorch v{} working'.format(th.__version__))
-      
+
       #loading graph    
       th_graph = PytorchGraph(
         log=self.log,
         config_graph=self._cfg_inf[ct.PYTORCH]
         )      
       device = next(th_graph.model.parameters()).device
-      total_time = _predict()
+      device_type = device.type.upper()
+      
+      device_name = 'GPU' if device_type == 'CUDA' else 'CPU'              
+      
+      self.log.p('Memory status before Pytorch run on {}'.format(device_name))
+      self.app_monitor.log_gpu_info()
+      total_time = _predict(th_graph)
+      self.log.p('Memory status after Pytorch run on {}'.format(device_name))
+      self.app_monitor.log_gpu_info()
+      
       if device.type.upper() == 'CUDA':
         self._results['TH_GPU_TIME'].append(total_time)
       else:
         self._results['TH_CPU_TIME'].append(total_time)
         self._results['TH_GPU_TIME'].append('N/A')
+      #endif
       
       if device.type.upper() == 'CUDA':
         th_graph.DEVICE = th.device('cpu')
         th_graph.model.to(th_graph.DEVICE)
-        total_time = _predict()
+        self.log.p('Memory status before Pytorch run on CPU')
+        self.app_monitor.log_gpu_info()
+        total_time = _predict(th_graph)
+        self.log.p('Memory status after Pytorch run on CPU')
+        self.app_monitor.log_gpu_info()
         self._results['TH_CPU_TIME'].append(total_time)
+      #endif
       
       del th_graph.model
       del th_graph
@@ -200,15 +219,16 @@ class VaporBoxCheck(LummetryObject):
       th.cuda.empty_cache()
       
       self._pytorch_ok = True
-    except Exception as e:
+    except:
+      str_e = traceback.format_exc()
       self.log.p(
-        'Exception encountered in Pytorch step: {}'.format(str(e)), 
+        'Exception encountered in Pytorch step: {}'.format(str_e), 
         color='r'
         )
     return
   
   def _run_tensorflow(self):
-    def _predict():
+    def _predict(tf_graph):
       timer_name = tf_graph._timer_name(ct.TIMER_SESSION_RUN)
       self.log.reset_timer(timer_name)
       
@@ -271,7 +291,11 @@ class VaporBoxCheck(LummetryObject):
         on_gpu=True
         )
         self.log.p('Tensorflow model running on GPU')
-        total_time = _predict()
+        self.log.p('Memory status before Tensorflow run on GPU')
+        self.app_monitor.log_gpu_info()
+        total_time = _predict(tf_graph)
+        self.log.p('Memory status after Tensorflow run on GPU')
+        self.app_monitor.log_gpu_info()
         self._results['TF_GPU_TIME'].append(total_time)
       else:
         self._results['TF_GPU_TIME'].append('N/A')
@@ -283,13 +307,18 @@ class VaporBoxCheck(LummetryObject):
         on_gpu=False
         )
       self.log.p('Tensorflow model running on CPU')
-      total_time = _predict()
+      self.log.p('Memory status before Tensorflow run on CPU')
+      self.app_monitor.log_gpu_info()
+      total_time = _predict(tf_graph)
+      self.log.p('Memory status after Tensorflow run on CPU')
+      self.app_monitor.log_gpu_info()
       self._results['TF_CPU_TIME'].append(total_time)
       
       self._tensorflow_ok = True
-    except Exception as e:
+    except:
+      str_e = traceback.format_exc()
       self.log.p(
-        str_msg='Exception encountered in Tensorflow step: {}'.format(str(e)),
+        str_msg='Exception encountered in Tensorflow step: {}'.format(str_e),
         color='r'
         )
     return

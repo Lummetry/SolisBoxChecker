@@ -23,12 +23,13 @@ try:
   import torch as th
   from models import mobilenet_v2
 except:
-  pass
+  print('Pytorch not found')
 
 try:
   import tensorflow.compat.v1 as tf
+  tf.disable_eager_execution()
 except:
-  pass
+  print('Tensorflow not found')
 
 import os
 import numpy as np
